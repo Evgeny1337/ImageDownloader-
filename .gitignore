@@ -1,0 +1,7 @@
+*.py[cod]
+
+images/*
+!images/.gitkeep
+
+venv/
+.env
