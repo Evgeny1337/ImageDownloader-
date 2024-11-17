@@ -1,12 +1,7 @@
-# import telegram
-# bot = telegram.Bot(token='8169604083:AAHTum4s0qw2LuratEnqYHu0U6sSkHIkqLg')
-# print(bot.get_me())
-
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from dotenv import load_dotenv
 from os import environ
-# Функция для обработки команд /start
 
 
 def start(update: Update, context: CallbackContext) -> None:
