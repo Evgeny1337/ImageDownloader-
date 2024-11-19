@@ -11,5 +11,6 @@ def get_file_extension(url):
 def download_picture(url, file_path):
     response = requests.get(url=url)
     response.raise_for_status()
-    with open(file_path, 'wb') as file:
-        file.write(response.content)
+    if '.' in file_path.split('/')[-1]:
+        with open(file_path, 'wb') as file:
+            file.write(response.content)

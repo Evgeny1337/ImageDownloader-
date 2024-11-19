@@ -1,31 +1,28 @@
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from fetch_nasa_images import fetch_archive
-from downloader import download_picture, get_file_extension
-from dotenv import load_dotenv
+from telegram.ext import Updater, CommandHandler, CallbackContext
+from dotenv import load_dotenv, set_key
+from load_tg_images import load_all_images, load_start_photo
 from os import environ
-import requests
+
+
+def save_chatid(update: Update, context: CallbackContext) -> None:
+    chat_id = update.message.chat_id
+    environ['TELEGRAM_CHAT_ID'] = str(chat_id)
+    dotenv_path = '.env'
+    set_key(dotenv_path, 'TELEGRAM_CHAT_ID', str(chat_id))
+    update.message.reply_text(
+        'Теперь фотографии будут отпарвляться в чат с id {}'.format(chat_id))
 
 
 def start(update: Update, context: CallbackContext) -> None:
-    chat_id = update.effective_chat.id
-    nasa_api_key = context.bot_data.get('nasa_api_key')
-    try:
-        picture_url = fetch_archive(
-            'https://api.nasa.gov/planetary/apod', 1, nasa_api_key)
-    except requests.exceptions.HTTPError as err:
-        update.message.reply_text("Ошибка сервера NASA {}".format(err))
-    send_url = [url for url in picture_url]
-    file_path = './images/{}'.format(get_file_extension(send_url[0]))
-    try:
-        download_picture(send_url[0], file_path)
-    except requests.exceptions.HTTPError as err:
-        update.message.reply_text("Ошибка загрузки фото {}".format(err))
-    context.bot.send_photo(chat_id=chat_id, photo=open(file_path, 'rb'))
+    load_start_photo(update, context)
 
 
-def echo(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(update.message.text)
+def send_all_images(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(
+        'Бот запущен! Я буду отправлять сообщения фотографии каждые 4 минуты')
+    context.job_queue.run_repeating(
+        load_all_images, interval=240, first=0, context=update.message.chat_id)
 
 
 def main():
@@ -38,7 +35,8 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dp.add_handler(CommandHandler("getallphoto", send_all_images))
+    dp.add_handler(CommandHandler('savechatid', save_chatid))
 
     updater.start_polling()
 
