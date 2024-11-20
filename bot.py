@@ -14,10 +14,6 @@ def save_chatid(update: Update, context: CallbackContext) -> None:
         'Теперь фотографии будут отпарвляться в чат с id {}'.format(chat_id))
 
 
-def start(update: Update, context: CallbackContext) -> None:
-    load_start_photo(update, context)
-
-
 def send_all_images(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
         'Бот запущен! Я буду отправлять сообщения фотографии каждые 4 минуты')
@@ -31,15 +27,9 @@ def main():
     nasa_api_key = environ['NASA_API_KEY']
     updater = Updater(tg_token, use_context=True)
     updater.dispatcher.bot_data['nasa_api_key'] = nasa_api_key
-
     dp = updater.dispatcher
-
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("getallphoto", send_all_images))
     dp.add_handler(CommandHandler('savechatid', save_chatid))
-
     updater.start_polling()
-
     updater.idle()
 
 
