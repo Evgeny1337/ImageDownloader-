@@ -1,5 +1,4 @@
 import time
-from telegram import Bot
 from telegram.ext import Updater
 from dotenv import load_dotenv
 from os import environ, listdir, path
@@ -41,6 +40,8 @@ def main():
             print("Прошло {} минут!".format(args.a))
     except KeyboardInterrupt:
         print("Остановка программы...")
+        updater.stop()
+    finally:
         print("Программа завершена.")
         exit(0)
 
