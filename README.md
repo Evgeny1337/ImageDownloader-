@@ -44,9 +44,13 @@
 Для корректной работы скриптов необходимо установить следующие библиотеки:
 
 - `requests====2.32.3` — для выполнения HTTP-запросов.
-- `pip install python-telegram-bot==13.0`— для работы с Telegram Bot API.
-- `argparse` — для обработки аргументов командной строки (встроенный модуль в Python).
+- `python-telegram-bot==13.0`— для работы с Telegram Bot API.
 - `python-dotenv==1.0.1`— для работы с переменными окружения.
+
+Все зависимости находятся в файле requirements.txt:
+
+```pip install -r requirements.txt:
+```
 
 ### Настройки .env
 
@@ -58,13 +62,24 @@ NASA_API_KEY=your_nasa_api_key
 ### Пример использования
 
 1. Загрузка всех изображений NASA:
-   `python fetch_nasa_images.py -a`
+
+   ```python fetch_nasa_images.py -a
+   ```
+
 2. Загрузка изображений с последнего запуска SpaceX:
-   `python fetch_spacex_images.py -f`
+
+   ```python fetch_spacex_images.py -f
+   ```
+
 3. Запуск всех скриптов для загрузки изображений:
-   `python script.py`
+
+   ```python script.py
+   ```
+
 4. Отправка всех изображений в Telegram:
-   `python send_all_tg_image.py -a 30`
+
+   ```python send_all_tg_image.py -a 30
+   ```
 
 ### Важно
 

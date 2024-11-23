@@ -4,11 +4,8 @@ from downloader import download_picture as download
 from downloader import get_file_extension as filename
 
 
-def fetch_pictures(*args):
-    if args:
-        url = 'https://api.spacexdata.com/v5/launches/{}'.format(args[0])
-    else:
-        url = 'https://api.spacexdata.com/v5/launches/latest'
+def fetch_pictures(launch_id='latest'):
+    url = 'https://api.spacexdata.com/v5/launches/{}'.format(launch_id)
     response = requests.get(url)
     response.raise_for_status()
     picture_response = []
@@ -40,15 +37,13 @@ def main():
         elif args.f:
             picture_spacex_urls = fetch_pictures(args.f)
     except requests.exceptions.HTTPError as err:
-        raise requests.exceptions.HTTPError(
-            "Ошибка получения изображений spacex: ", err)
-
+        print("Ошибка получения изображений spacex: ", err)
     for url in picture_spacex_urls:
         try:
             download(
                 url, './images/{}'.format(filename(url)))
         except requests.exceptions.HTTPError as err:
-            raise requests.exceptions.HTTPError("Ошибка: ", err)
+            print("Ошибка: ", err)
 
 
 if __name__ == '__main__':

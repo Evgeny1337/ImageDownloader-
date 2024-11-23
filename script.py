@@ -1,7 +1,7 @@
 import requests
 from os import environ
 from dotenv import load_dotenv
-from downloader import get_file_extension, download_picture
+from downloader import get_file_extension, download_picture, download_nasa_epic_picture
 from fetch_spacex_images import fetch_pictures as fetch_spacex_pictures
 from fetch_nasa_images import fetch_archive, fetch_epic
 
@@ -13,35 +13,35 @@ def main():
         picture_spacex_urls = fetch_spacex_pictures('5eb87ce4ffd86e000604b338')
 
     except requests.exceptions.HTTPError as err:
-        raise requests.exceptions.HTTPError(
-            "Ошибка получения изображений spacex: ", err)
+        print("Ошибка получения изображений spacex: ", err)
     try:
         picture_nasa_urls = fetch_archive(
             'https://api.nasa.gov/planetary/apod', count=10, api_key=nasa_api_key)
     except requests.exceptions.HTTPError as err:
-        raise requests.exceptions.HTTPError(
-            "Ошибка получения изображений nasa: ", err)
+        print("Ошибка получения изображений nasa: ", err)
     try:
         pictures_earth_nasa_url = fetch_epic(
             url='https://api.nasa.gov/EPIC/api/natural/images', api_key=nasa_api_key)
     except requests.exceptions.HTTPError as err:
-        raise requests.exceptions.HTTPError(
-            "Ошибка получения изображений земли с сайта nasa: ", err)
+        print("Ошибка получения изображений земли с сайта nasa: ", err)
     for url in picture_spacex_urls:
         try:
             download_picture(
                 url, './images/{}'.format(get_file_extension(url)))
         except requests.exceptions.HTTPError as err:
-            raise requests.exceptions.HTTPError("Ошибка: ", err)
+            print("Ошибка: ", err)
     for url in picture_nasa_urls:
         try:
             download_picture(
                 url, './images/{}'.format(get_file_extension(url)))
         except requests.exceptions.HTTPError as err:
-            raise requests.exceptions.HTTPError("Ошибка: ", err)
+            print("Ошибка: ", err)
     for url in pictures_earth_nasa_url:
-        download_picture(
-            url, './images/{}'.format(get_file_extension(url)))
+        try:
+            download_nasa_epic_picture(
+                url, './images/{}'.format(get_file_extension(url)), nasa_api_key)
+        except requests.exceptions.HTTPError as err:
+            print("Ошибка: ", err)
 
 
 if __name__ == '__main__':

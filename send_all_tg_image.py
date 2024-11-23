@@ -6,8 +6,28 @@ import argparse
 import random
 
 
+def send_photo(updater, dispatcher, chat_id, args, max_photo_size):
+    try:
+        files = [file for file in listdir('./images/')]
+        random.shuffle(files)
+        for file in files:
+            if path.isfile('./images/' + file) and path.getsize('./images/' + file) > 0 and path.getsize('./images/' + file) <= max_photo_size:
+                with open('./images/' + file, 'rb') as image:
+                    dispatcher.bot.send_photo(photo=image, chat_id=chat_id)
+            else:
+                print('Ошибка, файл не открывается, {}'.format(file))
+        time.sleep(args.a)
+        print("Прошло {} минут!".format(args.a))
+    except KeyboardInterrupt:
+        print("Остановка программы...")
+        updater.stop()
+    finally:
+        print("Программа завершена.")
+        exit(0)
+
+
 def main():
-    MAX_PHOTO_SIZE = 20 * 1024 * 1024
+    max_photo_size = 20 * 1024 * 1024
     load_dotenv()
     tg_token = environ['TELEGRAM_TOKEN']
     try:
@@ -25,25 +45,9 @@ def main():
     updater = Updater(tg_token, use_context=True)
     dispatcher = updater.dispatcher
 
-    try:
-        while True:
-            updater.start_polling()
-            files = [file for file in listdir('./images/')]
-            random.shuffle(files)
-            for file in files:
-                if path.isfile('./images/' + file) and path.getsize('./images/' + file) > 0 and path.getsize('./images/' + file) <= MAX_PHOTO_SIZE:
-                    with open('./images/' + file, 'rb') as image:
-                        dispatcher.bot.send_photo(photo=image, chat_id=chat_id)
-                else:
-                    print('Ошибка, файл не открывается, {}'.format(file))
-            time.sleep(args.a)
-            print("Прошло {} минут!".format(args.a))
-    except KeyboardInterrupt:
-        print("Остановка программы...")
-        updater.stop()
-    finally:
-        print("Программа завершена.")
-        exit(0)
+    while True:
+        updater.start_polling()
+        send_photo(updater, dispatcher, chat_id, args, max_photo_size)
 
 
 if __name__ == '__main__':
