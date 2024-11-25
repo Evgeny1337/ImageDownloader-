@@ -63,22 +63,32 @@ NASA_API_KEY=your_nasa_api_key
 
 1. Загрузка всех изображений NASA:
 
-   ```python fetch_nasa_images.py -a
+   ```bash
+      python fetch_nasa_images.py -a
    ```
 
 2. Загрузка изображений с последнего запуска SpaceX:
 
-   ```python fetch_spacex_images.py -f
+   ```bash
+      python fetch_spacex_images.py -f
    ```
 
 3. Запуск всех скриптов для загрузки изображений:
 
-   ```python script.py
+   ```bash
+      python script.py
    ```
 
 4. Отправка всех изображений в Telegram:
 
-   ```python send_all_tg_image.py -a 30
+   ```bash
+      python send_all_tg_image.py -a 30
+   ```
+
+5. Отправка одного изображения в Telegram (Выбор сулчайного изображения из папки images):
+
+   ```bash
+      python send_one_tg_image.py -r
    ```
 
 ### Важно

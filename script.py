@@ -1,7 +1,7 @@
 import requests
 from os import environ
 from dotenv import load_dotenv
-from downloader import get_file_extension, download_picture, download_nasa_epic_picture
+from downloader import get_file_extension, download_picture
 from fetch_spacex_images import fetch_pictures as fetch_spacex_pictures
 from fetch_nasa_images import fetch_archive, fetch_epic
 
@@ -38,7 +38,7 @@ def main():
             print("Ошибка: ", err)
     for url in pictures_earth_nasa_url:
         try:
-            download_nasa_epic_picture(
+            download_picture(
                 url, './images/{}'.format(get_file_extension(url)), nasa_api_key)
         except requests.exceptions.HTTPError as err:
             print("Ошибка: ", err)

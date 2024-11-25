@@ -1,7 +1,6 @@
 import argparse
 import requests
 from downloader import download_picture as download
-from downloader import download_nasa_epic_picture as download_epic
 from downloader import get_file_extension as filename
 from os import environ
 from dotenv import load_dotenv
@@ -23,11 +22,12 @@ def fetch_archive(url, count, api_key):
     response = requests.get(url, params=params)
     response.raise_for_status()
     picture_response = []
-    if type(response.json()) is list:
-        for url in response.json():
+    json_response = response.json()
+    if type(json_response) is list:
+        for url in json_response:
             picture_response.append(url['url'])
     else:
-        picture_response.append(response.json()['url'])
+        picture_response.append(json_response['url'])
     for picture_url in picture_response:
         yield picture_url
 
@@ -57,7 +57,7 @@ def main():
 
     for url in picture_nasa_epic_urls:
         try:
-            download_epic(
+            download(
                 url, './images/{}'.format(filename(url)), nasa_api_key)
         except requests.exceptions.HTTPError as err:
             print("Ошибка: ", err)
